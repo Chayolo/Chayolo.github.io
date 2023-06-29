@@ -1,103 +1,199 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="Chayolo"><meta name="renderer" content="webkit"><meta name="copyright" content="Chayolo"><meta name="keywords" content="Chayolo"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>About SQL Inject · Mr.Long's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
-  "use strict";
-  // rel=preload support test
-  if( !w.loadCSS ){
-    w.loadCSS = function(){};
-  }
-  // define on the loadCSS obj
-  var rp = loadCSS.relpreload = {};
-  // rel=preload feature support test
-  // runs once and returns a function for compat purposes
-  rp.support = (function(){
-    var ret;
-    try {
-      ret = w.document.createElement( "link" ).relList.supports( "preload" );
-    } catch (e) {
-      ret = false;
-    }
-    return function(){
-      return ret;
-    };
-  })();
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
 
-  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
-  // then change that media back to its intended value on load
-  rp.bindMediaToggle = function( link ){
-    // remember existing media attr for ultimate state, or default to 'all'
-    var finalMedia = link.media || "all";
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-    function enableStylesheet(){
-      link.media = finalMedia;
-    }
-
-    // bind load handlers to enable media
-    if( link.addEventListener ){
-      link.addEventListener( "load", enableStylesheet );
-    } else if( link.attachEvent ){
-      link.attachEvent( "onload", enableStylesheet );
-    }
-
-    // Set rel and non-applicable media type to start an async request
-    // note: timeout allows this to happen async to let rendering continue in IE
-    setTimeout(function(){
-      link.rel = "stylesheet";
-      link.media = "only x";
-    });
-    // also enable media after 3 seconds,
-    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
-    setTimeout( enableStylesheet, 3000 );
-  };
-
-  // loop through link elements in DOM
-  rp.poly = function(){
-    // double check this to prevent external calls from running
-    if( rp.support() ){
-      return;
-    }
-    var links = w.document.getElementsByTagName( "link" );
-    for( var i = 0; i < links.length; i++ ){
-      var link = links[ i ];
-      // qualify links to those with rel=preload and as=style attrs
-      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
-        // prevent rerunning on link
-        link.setAttribute( "data-loadcss", true );
-        // bind listeners to toggle media back
-        rp.bindMediaToggle( link );
-      }
-    }
-  };
-
-  // if unsupported, run the polyfill
-  if( !rp.support() ){
-    // run once at least
-    rp.poly();
-
-    // rerun poly on an interval until onload
-    var run = w.setInterval( rp.poly, 500 );
-    if( w.addEventListener ){
-      w.addEventListener( "load", function(){
-        rp.poly();
-        w.clearInterval( run );
-      } );
-    } else if( w.attachEvent ){
-      w.attachEvent( "onload", function(){
-        rp.poly();
-        w.clearInterval( run );
-      } );
-    }
-  }
+<link rel="stylesheet" href="/css/main.css">
 
 
-  // commonjs
-  if( typeof exports !== "undefined" ){
-    exports.loadCSS = loadCSS;
-  }
-  else {
-    w.loadCSS = loadCSS;
-  }
-}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 6.3.0"></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
-  i.fa.fa-comment
-  .saying--><div class="cxo-profile-inner"><div class="profile-name">longlongyu</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.Long's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">About SQL Inject</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2023-04-22</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="SQL注入漏洞产生的原理："><a href="#SQL注入漏洞产生的原理：" class="headerlink" title="SQL注入漏洞产生的原理："></a>SQL注入漏洞产生的原理：</h1><ul>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="SQL注入漏洞产生的原理： SQL 注入就是指 web 应用程序对用户输入的数据合法性没有过滤或者是判断，前端传入的参数是攻击者可以控制，并且参数带入数据库的查询，攻击者可以通过构造恶意的 sql 语句来实现对数据库的任意操作。  对于上述原理的补充与理解： 1：web应用为什么能向后台数据库传递SQL语句进行数据库操作(即为什么参数可以代入数据库的查询)？  Web应用程序是基于客户端&amp;#x2F">
+<meta property="og:type" content="article">
+<meta property="og:title" content="About SQL Inject">
+<meta property="og:url" content="http://example.com/2023/04/22/About-SQL-Inject/index.html">
+<meta property="og:site_name" content="Chayolo">
+<meta property="og:description" content="SQL注入漏洞产生的原理： SQL 注入就是指 web 应用程序对用户输入的数据合法性没有过滤或者是判断，前端传入的参数是攻击者可以控制，并且参数带入数据库的查询，攻击者可以通过构造恶意的 sql 语句来实现对数据库的任意操作。  对于上述原理的补充与理解： 1：web应用为什么能向后台数据库传递SQL语句进行数据库操作(即为什么参数可以代入数据库的查询)？  Web应用程序是基于客户端&amp;#x2F">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-22T15:56:43.000Z">
+<meta property="article:modified_time" content="2023-05-15T16:14:08.949Z">
+<meta property="article:author" content="Chayolo">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2023/04/22/About-SQL-Inject/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2023/04/22/About-SQL-Inject/","path":"2023/04/22/About-SQL-Inject/","title":"About SQL Inject"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>About SQL Inject | Chayolo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Chayolo</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E4%BA%A7%E7%94%9F%E7%9A%84%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">SQL注入漏洞产生的原理：</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Chayolo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/04/22/About-SQL-Inject/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Chayolo">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Chayolo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="About SQL Inject | Chayolo">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          About SQL Inject
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-04-22 23:56:43" itemprop="dateCreated datePublished" datetime="2023-04-22T23:56:43+08:00">2023-04-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-16 00:14:08" itemprop="dateModified" datetime="2023-05-16T00:14:08+08:00">2023-05-16</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="SQL注入漏洞产生的原理："><a href="#SQL注入漏洞产生的原理：" class="headerlink" title="SQL注入漏洞产生的原理："></a>SQL注入漏洞产生的原理：</h1><ul>
 <li><p>SQL 注入就是指 web 应用程序对用户输入的数据合法性没有过滤或者是判断，前端传入的参数是攻击者可以控制，并且参数带入数据库的查询，攻击者可以通过构造恶意的 sql 语句来实现对数据库的任意操作。</p>
 <hr>
 <p>对于上述原理的补充与理解：</p>
@@ -110,4 +206,79 @@
 <p>​</p>
 </li>
 </ul>
-</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">Chayolo</a></p><p> <span>Link:  </span><a href="http://example.com/2023/04/22/About-SQL-Inject/">http://example.com/2023/04/22/About-SQL-Inject/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E4%BA%A7%E7%94%9F%E7%9A%84%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">SQL注入漏洞产生的原理：</span></a></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chayolo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
